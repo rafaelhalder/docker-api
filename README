@@ -1,0 +1,23 @@
+docker build -t api .
+
+docker run -p 3334:3333 api
+docker run -p 3334:3333 -d api
+
+docker ps
+#listagem dos ativos
+
+docker ps -a
+#traz todos ativos ou não
+
+docker logs ad64716f0889
+#ID que pegou do docker ps
+docker history api
+
+docker start ad64716f0889
+docker restart ad64716f0889
+docker pause ad64716f0889
+docker unpause ad64716f0889
+docker stop ad64716f0889
+
+#3333 = minha porta local
+#3334 = porta do servidor
