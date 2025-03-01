@@ -147,3 +147,5 @@ volumes: - database:/var/lib/postgresql/data
 
 volumes:
 database:
+
+database:
