@@ -1,23 +1,149 @@
+# Construir a imagem Docker com a tag "api"
+
 docker build -t api .
 
+# Executar o container mapeando a porta 3334 da máquina local para a porta 3333 do container
+
 docker run -p 3334:3333 api
+
+# Executar o container em segundo plano (detached mode) mapeando a porta 3334 da máquina local para a porta 3333 do container
+
 docker run -p 3334:3333 -d api
 
+# Listar todos os containers ativos
+
 docker ps
-#listagem dos ativos
+
+# listagem dos ativos
+
+# Listar todos os containers, ativos ou não
 
 docker ps -a
-#traz todos ativos ou não
+
+# traz todos ativos ou não
+
+# Ver os logs de um container específico usando o ID do container
 
 docker logs ad64716f0889
-#ID que pegou do docker ps
+
+# ID que pegou do docker ps
+
+# Ver o histórico de uma imagem
+
 docker history api
 
+# Iniciar um container parado
+
 docker start ad64716f0889
+
+# Reiniciar um container
+
 docker restart ad64716f0889
+
+# Pausar um container
+
 docker pause ad64716f0889
+
+# Despausar um container
+
 docker unpause ad64716f0889
+
+# Parar um container
+
 docker stop ad64716f0889
 
-#3333 = minha porta local
-#3334 = porta do servidor
+# Remover um container
+
+docker rm ad64716f0889
+
+# Construir imagens Docker com versões específicas
+
+docker build -t api:v1 . # Versionar as imagens
+docker build -t api:v2 .
+
+# Executar containers com versões específicas das imagens
+
+docker run -p 3334:3333 api:v1
+docker run -p 3335:3333 api:v2
+
+# Remover uma imagem forçando a remoção
+
+docker rmi -f ad64716f0889
+
+# Executar um comando dentro de um container em execução
+
+docker exec -it ad64716f0889 /bash
+docker exec -it ad64716f0889 /bin/bash
+docker exec -it ad64716f0889 //bin/sh
+
+# Entrar no container
+
+# Inspecionar um container para obter informações detalhadas
+
+docker container inspect ad64716f0889
+
+# Informações do container
+
+# Criar um volume Docker
+
+docker volume create api-volume
+
+# Inspecionar um volume Docker
+
+docker volume inspect api-volume
+
+# Executar containers utilizando volumes para persistência de dados
+
+docker run -v api-volume:/usr/src/app -p 3334:3333 api:v1
+docker run -v api-volume:/usr/src/app -p 3335:3333 -d api:v2
+
+# Remover um volume Docker
+
+docker volume rm api-volume
+
+# Remover todos os containers parados
+
+docker container prune
+
+# 3333 = minha porta local
+
+# 3334 = porta do servidor
+
+docker rmi 54335344e
+-----------------------------------------------------//---------------------------------------------//------------------------------------
+docker run --name db-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d bitnami/postgresql:latest
+
+docker run: Este comando é usado para criar e iniciar um novo contêiner a partir de uma imagem Docker.
+
+--name db-postgres: Define o nome do contêiner como db-postgres. Isso facilita a referência ao contêiner posteriormente.
+
+-e POSTGRES_USER=postgres: Define uma variável de ambiente dentro do contêiner. Neste caso, está definindo o usuário do PostgreSQL como postgres.
+
+-e POSTGRES_PASSWORD=docker: Define outra variável de ambiente, que é a senha do usuário PostgreSQL. Aqui, a senha é docker.
+
+-p 5432:5432: Mapeia a porta 5432 do host (máquina local) para a porta 5432 do contêiner. Isso permite que você acesse o PostgreSQL no contêiner através da porta 5432 do host.
+
+-d: Executa o contêiner em segundo plano (modo "detached").
+
+bitnami/postgresql:latest: Especifica a imagem Docker a ser usada para criar o contêiner. bitnami/postgresql é a imagem do PostgreSQL fornecida pela Bitnami, e latest indica que deve ser usada a versão mais recente da imagem.
+-----------------------------------------------------//---------------------------------------------//------------------------------------
+
+version: '3.9'
+services:
+api:
+build:
+context: .
+dockerfile: Dockerfile
+image: nodejs
+container_name: api
+ports: - "3333:3333"
+depends_on: - postgres
+postgres:
+image: "bitname/postgresql:latest"
+container_name: postgres
+ports: - "5432:5432"
+environment: - POSTGRES_USER=postgres - POSTGRES_PASSWORD=postgres - POSTGRES_DB=api
+volumes: - database:/var/lib/postgresql/data
+
+volumes:
+database:
